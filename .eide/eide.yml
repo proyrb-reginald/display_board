@@ -36,7 +36,8 @@ targets:
         - rtthread/components/finsh
         - rtthread/include
       libList: []
-    excludeList: []
+    excludeList:
+      - hal/Core/Src/main.c
     toolchain: GCC
     toolchainConfigMap:
       GCC:
