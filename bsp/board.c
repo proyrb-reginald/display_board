@@ -13,21 +13,16 @@
 #include <main.h>
 
 #if defined(RT_USING_USER_MAIN) && defined(RT_USING_HEAP)
-/*
- * Please modify RT_HEAP_SIZE if you enable RT_USING_HEAP
- * the RT_HEAP_SIZE max value = (sram size - ZI size), 1024 means 1024 bytes
- */
-#define RT_HEAP_SIZE (15 * 1024)
-static rt_uint8_t rt_heap[RT_HEAP_SIZE];
-
 RT_WEAK void *rt_heap_begin_get(void)
 {
-    return rt_heap;
+    extern int __bss_end;
+    return &__bss_end;
 }
 
 RT_WEAK void *rt_heap_end_get(void)
 {
-    return rt_heap + RT_HEAP_SIZE;
+    extern int _end;
+    return &_end;
 }
 #endif
 
@@ -46,6 +41,8 @@ void rt_hw_board_init(void)
     MPU_Config();
     HAL_Init();
     SystemClock_Config();
+    SystemCoreClockUpdate();
+    HAL_SYSTICK_Config(HAL_RCC_GetSysClockFreq() / RT_TICK_PER_SECOND);
     MX_GPIO_Init();
 
     /* Call components board initial (use INIT_BOARD_EXPORT()) */
